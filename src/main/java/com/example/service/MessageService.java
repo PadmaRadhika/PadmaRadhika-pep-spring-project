@@ -20,14 +20,17 @@ public class MessageService {
     }
     //Use case: 3 Create New Message
     public Message addMessage(Message message){
+        System.out.println("##Message::"+message);
         String messageText = message.getMessageText();
         int postedBy = message.getPostedBy();        
         boolean isMessageBlank = true;        
         if(messageText != null && messageText.length() > 0 && messageText.length() <= 255)
             isMessageBlank = false;        
         Optional<Account> optionalAccount = accountRepository.findById(postedBy);
+        System.out.println("##optional::"+optionalAccount);
         if(optionalAccount.isPresent() && !isMessageBlank){
-            return messageRepository.save(message);
+            System.out.println("##savinggggg::");
+            return messageRepository.save(new Message(message.getPostedBy(), message.getMessageText(), message.getTimePostedEpoch()));
         }
         return null;        
     }
@@ -71,4 +74,9 @@ public class MessageService {
         }        
         return null;
     }
+    //Use case 8: Get All Messages From User Given Account Id
+    public List<Message> getMessagesPostedBy(int postedBy){ 
+        return messageRepository.findByPostedBy(postedBy);
+    }
+
 }

@@ -13,26 +13,22 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
     //A private method to check if account exists by username
-    private Account findAccountByUserName(String userName){
-        if(userName != null && userName.trim().length() > 0){
-            List<Account> allAccounts = accountRepository.findAll();
-            for(Account account: allAccounts){
-                if(account.getUsername().equals(userName))
-                    return account;
-            }
+    public Account findAccountByUserName(String userName){
+        if(userName != null && userName.trim().length() > 0){            
+            return accountRepository.findByUsername(userName);
         }
         return null;
     }
-
-    public Account registerAccount(Account account){
+    public Account registerAccount(Account account){        
         String userName = account.getUsername();
-        String password = account.getPassword();
+        String password = account.getPassword();        
         //First use case: User Registration
         boolean isUserBlank = true;
         if(userName != null && userName.trim().length() > 0)
             isUserBlank = false;
-        Account existingAccount = findAccountByUserName(userName);
-        if(!isUserBlank && password.trim().length() >= 4 && existingAccount != null )
+        Account existingAccount = findAccountByUserName(userName); 
+        System.out.println("##existing user::"+existingAccount);       
+        if(!isUserBlank && password.trim().length() >= 4 && existingAccount == null )
             return accountRepository.save(account);
         return null;
     }
