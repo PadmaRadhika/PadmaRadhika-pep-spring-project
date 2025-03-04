@@ -46,4 +46,29 @@ public class MessageService {
     }
 
     //Use Case: 6, Delete a message, given Message id
+    public Message deleteMessage(int messageId){
+        Message existingMessage = getMessageById(messageId);
+        if(existingMessage != null){
+            accountRepository.deleteById(existingMessage.getPostedBy());
+            messageRepository.deleteById(messageId);
+        }
+        if(getMessageById(messageId) == null)
+            return existingMessage;
+        return null;
+    }
+
+    //Use Case: 7, Update Message given messageid
+    public Message updateMessage(int messageId, Message message){
+        String messageText = message.getMessageText();        
+        boolean isMessageBlank = true;        
+        if(messageText != null && messageText.length() > 0 && messageText.length() <= 255)
+            isMessageBlank = false;
+        Optional<Message> optionalMessage = messageRepository.findById(messageId);
+        if(optionalMessage.isPresent() && !isMessageBlank){
+            Message toBeUpdatedMessage = optionalMessage.get();
+            toBeUpdatedMessage.setMessageText(messageText);
+            return messageRepository.save(toBeUpdatedMessage);
+        }        
+        return null;
+    }
 }
